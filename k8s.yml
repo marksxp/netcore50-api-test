@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: service-aforo255
-        image: antony0618/servicenet5:latest
+        image: sxpdevops/servicenet5:latest
         ports:
         - containerPort: 80
         imagePullPolicy: Always
