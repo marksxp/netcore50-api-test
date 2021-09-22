@@ -9,11 +9,11 @@ node {
             dotnet_build();
         }
         stage('Docker') {
-			withCredentials([usernamePassword(credentialsId: 'DockerHubCredenciales', passwordVariable: 'DockerHubPassword', usernameVariable: 'DockerHubUsername')]) {
-				// some block the code here ca access $DockerHubPassword and $DockerHubUsername
+		withCredentials([usernamePassword(credentialsId: 'DockerHubCredenciales', passwordVariable: 'DockerHubPassword', usernameVariable: 'DockerHubUsername')]) {
+			// some block the code here ca access $DockerHubPassword and $DockerHubUsername
 				
-				sh 'docker login --username marksxp --password $DockerHubPassword'
-			}
+			sh 'docker login --username marksxp --password $DockerHubPassword'
+		}
                 
             sh 'docker build -t marksxp/servicenet5 .'
             sh 'docker push marksxp/servicenet5'
@@ -39,7 +39,7 @@ node {
 }
 
 def dotnet_build() {
-    sh 'dotnet restore'
+	sh 'dotnet restore'
 	sh 'dotnet build'
-    //sh 'dotnet test'
+	//sh 'dotnet test'
 }
