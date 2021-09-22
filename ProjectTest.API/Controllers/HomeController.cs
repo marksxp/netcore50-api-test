@@ -18,7 +18,7 @@ namespace ProjectTest.API.Controllers
         public string Get()
         {
             _logger.LogInformation("Initial Home Get");
-            return "Net Core 5.0 Running ... 21092021-v1.0.2 AZURE-DEVOPS SXP AFORO255";
+            return "Net Core 5.0 Running ... 21092021-v1.0.3 AZURE-DEVOPS SXP AFORO255";
         }
     }
 }
