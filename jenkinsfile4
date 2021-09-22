@@ -1,31 +1,22 @@
-pipeline {
-    agent any
+import groovy.json.JsonSlurper
 
-    stages {
+node {
+    ws('netcore') {
         stage('SCM') {
-            steps {
-                git branch: 'main', url: 'https://github.com/marksxp/netcore50-api-test.git'
-                
-            }
+            git branch: 'main', url: 'https://github.com/marksxp/netcore50-api-test.git'
         }
         stage('Build') {
-            steps {
-                sh 'dotnet restore'
-                sh 'dotnet build'
-                //sh 'dotnet test'
-            }
+            dotnet_build();
         }
         stage('Docker') {
-            steps {
-				withCredentials([usernamePassword(credentialsId: 'DockerHubCredenciales', passwordVariable: 'DockerHubPassword', usernameVariable: 'DockerHubUsername')]) {
-					// some block the code here ca access $DockerHubPassword and $DockerHubUsername
-					
-					sh 'docker login --username marksxp --password $DockerHubPassword'
-				}
+			withCredentials([usernamePassword(credentialsId: 'DockerHubCredenciales', passwordVariable: 'DockerHubPassword', usernameVariable: 'DockerHubUsername')]) {
+				// some block the code here ca access $DockerHubPassword and $DockerHubUsername
+				
+				sh 'docker login --username marksxp --password $DockerHubPassword'
+			}
                 
-                sh 'docker build -t marksxp/servicenet5 .'
-                sh 'docker push marksxp/servicenet5'
-            }
+            sh 'docker build -t marksxp/servicenet5 .'
+            sh 'docker push marksxp/servicenet5'
         }
         stage('Deploy Dev') {
             steps {
@@ -36,13 +27,19 @@ pipeline {
                 //sh 'az container create --resource-group aforo255Devops --name micro5testservice --image antony0618/servicenet5:latest --dns-name-label micro5testservice --ports 80'
             }
         }
-        stage('Deploy Prod') {
+        stage('Deploy AKS') {
             steps {
                 sh 'az login --service-principal --username f1456e1c-c5c1-451b-8772-573443ddc930 --password ub~eZ~D5x5BB~ETBjhZKk1iU~jaOvZ0~Qw --tenant 6c876afb-7ea3-4b8e-823c-6dd3f8251ad8'
                 sh 'az aks get-credentials --resource-group  MyResourceGroup --name mykubernetescluster1 & kubectl config get-contexts --kubeconfig=/home/sxp/.kube/config'
                 sh 'kubectl config use-context mykubernetescluster1 --kubeconfig=/home/sxp/.kube/config'
                 sh 'kubectl delete --all pods --kubeconfig=${KUBE_PATH_CONFIG} & kubectl apply -f k8s.yml --kubeconfig=/home/sxp/.kube/config'
             }
-        }
+        }    
     }
+}
+
+def dotnet_build() {
+    sh 'dotnet restore'
+	sh 'dotnet build'
+    //sh 'dotnet test'
 }
