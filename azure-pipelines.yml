@@ -61,7 +61,7 @@ stages:
       displayName: 02 KubernetesManifest
       inputs:
         action: 'deploy'
-        kubernetesServiceConnection: 'kube-cluster-connection'
+        kubernetesServiceConnection: 'kube-cluster-connection1'
         manifests: '$(System.ArtifactsDirectory)/k8s.yml'
         containers: 'marksxp/servicenet5:$(tag)'
     
