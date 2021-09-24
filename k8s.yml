@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: service-aforo255
-        image: marksxp/servicenet5:latest
+        #image: marksxp/servicenet5:latest
+        image: 'marksxp/servicenet5:$(tag)'
         ports:
         - containerPort: 80
         imagePullPolicy: Always
