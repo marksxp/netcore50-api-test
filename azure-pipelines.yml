@@ -32,7 +32,7 @@ stages:
     - task: CopyFiles@2
       displayName: 02 CopyFiles
       inputs:
-        Contents: '**/*.yaml'
+        Contents: '**/*.yml'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
       displayName: 03 PublishBuildArtifacts
