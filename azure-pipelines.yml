@@ -22,7 +22,7 @@ stages:
       vmImage: ubuntu-latest
     steps:
     - task: Docker@2
-      displayName: Docker Build
+      displayName: 01 Docker Build image
       inputs:
         containerRegistry: 'DockerHub'
         repository: 'marksxp/servicenet5'
@@ -30,10 +30,12 @@ stages:
         Dockerfile: '**/Dockerfile'
         tags: '$(tag)'
     - task: CopyFiles@2
+      displayName: 02 CopyFiles
       inputs:
         Contents: '**/*.yaml'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
+      displayName: 03 PublishBuildArtifacts
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
@@ -41,3 +43,26 @@ stages:
 
 #########################################################################
 ############ DEPLOY #####################################################
+- stage: Deploy
+  displayName: Build
+  jobs:
+  - job: Deploy
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: 01 DownloadPipelineArtifact
+      inputs:
+        buildType: 'current'
+        artifactName: 'drop'
+        itemPattern: '**/*.yaml'
+        targetPath: '$(System.ArtifactsDirectory)'
+    - task: KubernetesManifest@0
+      displayName: 02 KubernetesManifest
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'ServiceConectionEKS'
+        manifests: '$(System.ArtifactsDirectory)/k8s-azure.yml'
+        containers: 'marksxp/servicenet5:$(tag)'
+    
