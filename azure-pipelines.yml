@@ -56,7 +56,7 @@ stages:
       inputs:
         buildType: 'current'
         artifactName: 'drop'
-        itemPattern: '**/*.yaml'
+        itemPattern: '**/*.yml'
         targetPath: '$(System.ArtifactsDirectory)'
     - task: KubernetesManifest@0
       displayName: 02 KubernetesManifest
